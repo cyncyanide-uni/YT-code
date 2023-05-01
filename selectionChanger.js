@@ -1,90 +1,105 @@
+//dropdown menu changes
+
+//import necessary data
 import { chartData } from "./chartData.js";
 import { myChart, createLinechart } from "./lineChart.js";
 import { createPiechart } from "./pieChart.js";
 import { addChart } from "./index.js";
 
+// fetch the data
 const res = await fetch("http://localhost:3000/", {
   crossorigin: true,
 });
+// convert the data to json
 const Apidata = await res.json();
+
 const barChartData = [
   {
     name: "flagarnt",
     months: [],
     GainedSub: [],
   },
+
   {
     name: "Huberman Labs",
     months: [],
     GainedSub: [],
   },
+
   {
     name: "Lex Fridman",
     months: [],
     GainedSub: [],
   },
+  {
+    name: "Impaulsive ",
+    subscribers: "4.47m",
+    months: [],
+    GainedSub: [],
+    revenue: [],
+    views: [],
+  },
+  {
+    name: "Tim Ferris",
+    subscribers: "1.27m",
+    months: [],
+    GainedSub: [],
+    revenue: [],
+    views: [],
+  },
 ];
 
-for (let i = 0; i < 3; i++) {
+// it will change the data to an array
+// i will be the channel index
+for (let i = 0; i < 5; i++) {
   for (let j = 0; j < Apidata.bargraphData.length; j++) {
-    if (i == 0) {
-      if (i == Apidata.bargraphData[j].id - 1) {
-        barChartData[0].months.push(Apidata.bargraphData[j].month);
-        barChartData[0].GainedSub.push(Apidata.bargraphData[j].GainedSub);
-      }
-    }
-    if (i == 1) {
-      if (i == Apidata.bargraphData[j].id - 1) {
-        barChartData[1].months.push(Apidata.bargraphData[j].month);
-        barChartData[1].GainedSub.push(Apidata.bargraphData[j].GainedSub);
-      }
-    }
-    if (i == 2) {
-      if (i == Apidata.bargraphData[j].id - 1) {
-        barChartData[2].months.push(Apidata.bargraphData[j].month);
-        barChartData[2].GainedSub.push(Apidata.bargraphData[j].GainedSub);
-      }
-    }
+    barChartData[i].months.push(Apidata.bargraphData[j].month);
+    barChartData[i].GainedSub.push(Apidata.bargraphData[j].GainedSub);
   }
 }
 
-createPiechart([
-  { label: "Male", value: Apidata.piechart[0].male },
-  { label: "Female", value: Apidata.piechart[0].female },
-]);
+createPiechart(
+  [
+    { label: "Male", value: Apidata.piechart[0].male },
+    { label: "Female", value: Apidata.piechart[0].female },
+  ],
+  "#pie"
+);
 let selectedChannel = 0;
 
 const selection = document.getElementById("ChannelList");
 const pieEle = document.getElementById("pie");
+
 selection.addEventListener("change", async () => {
   const title = document.getElementById("ytTitle");
-  selectedChannel = selection.selectedIndex;
+  selectedChannel = selection.value;
   const currentChart = document.getElementById("chart");
-  currentChart.innerHTML = "";
-  addChart(selectedChannel);
-  await myChart.destroy();
-  pieEle.innerHTML = "";
-  if (selectedChannel == 1) {
-    title.innerText = Apidata.piechart[1].name;
-    createPiechart([
-      { label: "Male", value: Apidata.piechart[1].male },
-      { label: "Female", value: Apidata.piechart[1].female },
-    ]);
-  }
-  if (selectedChannel == 2) {
-    title.innerText = Apidata.piechart[2].name;
-    createPiechart([
-      { label: "Male", value: Apidata.piechart[2].male },
-      { label: "Female", value: Apidata.piechart[2].female },
-    ]);
-  }
-  if (selectedChannel == 0) {
-    title.innerText = Apidata.piechart[0].name;
-    createPiechart([
-      { label: "Male", value: Apidata.piechart[0].male },
-      { label: "Female", value: Apidata.piechart[0].female },
-    ]);
-  }
+
+  /// delete the current chart
+  currentChart.innerHTML = ""; // delete the line chart
+  addChart(selectedChannel); // add the bar chart
+  await myChart.destroy(); // delete the bar graph
+  pieEle.innerHTML = ""; // delete the pie chart
+  createPiechart(
+    [
+      {
+        label: "Male",
+        value: JSON.parse(localStorage.getItem("CompareApidata")).piechart[
+          selectedChannel
+        ].male,
+      },
+      {
+        label: "Female",
+        value: JSON.parse(localStorage.getItem("CompareApidata")).piechart[
+          selectedChannel
+        ].female,
+      },
+    ],
+    "#pie"
+  );
+  // add the data for pie chart according to the changed variable
+
+  // we use chart.js library to show
   createLinechart({
     labels: [
       "JANUARY",
@@ -103,7 +118,8 @@ selection.addEventListener("change", async () => {
     datasets: [
       {
         label: "subscriber growth per month",
-        data: barChartData[selectedChannel].GainedSub,
+        data: JSON.parse(localStorage.getItem("lineChartData"))[selectedChannel]
+          .GainedSub,
         borderColor: "rgba(75, 192, 192, 1)",
       },
     ],

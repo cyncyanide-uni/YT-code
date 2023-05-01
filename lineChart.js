@@ -1,12 +1,17 @@
-// Get the canvas element
+// Get the canvas element "myChart" and stores the 2D render in variable 'ctx'
 var ctx = document.getElementById("myChart").getContext("2d");
+
+//import chartData
 import { chartData } from "./chartData.js";
 
+//get canvas element with id=myChart and store in variable 'currentchart'
 const currentChart = document.getElementById("myChart");
+
 const res = await fetch("http://localhost:3000/", {
   crossorigin: true,
 });
 const Apideta = await res.json();
+
 const barChartData = [
   {
     name: "flagarnt",
@@ -23,8 +28,25 @@ const barChartData = [
     months: [],
     GainedSub: [],
   },
+  {
+    name: "Impaulsive ",
+    subscribers: "4.47m",
+    months: [],
+    GainedSub: [],
+    revenue: [],
+    views: [],
+  },
+  {
+    name: "Tim Ferris",
+    subscribers: "1.27m",
+    months: [],
+    GainedSub: [],
+    revenue: [],
+    views: [],
+  },
 ];
 
+//pushing the data into the graph
 for (let i = 0; i < 3; i++) {
   for (let j = 0; j < Apideta.bargraphData.length; j++) {
     if (i == 0) {
@@ -33,12 +55,14 @@ for (let i = 0; i < 3; i++) {
         barChartData[0].GainedSub.push(Apideta.bargraphData[j].GainedSub);
       }
     }
+
     if (i == 1) {
       if (i == Apideta.bargraphData[j].id - 1) {
         barChartData[1].months.push(Apideta.bargraphData[j].month);
         barChartData[1].GainedSub.push(Apideta.bargraphData[j].GainedSub);
       }
     }
+
     if (i == 2) {
       if (i == Apideta.bargraphData[j].id - 1) {
         barChartData[2].months.push(Apideta.bargraphData[j].month);
@@ -47,6 +71,8 @@ for (let i = 0; i < 3; i++) {
     }
   }
 }
+
+//labelling the data axes
 var lineChartData = {
   labels: [
     "JANUARY",
@@ -70,7 +96,9 @@ var lineChartData = {
     },
   ],
 };
+
 var myChart;
+
 // Create the line chart
 myChart = new Chart(ctx, {
   type: "line",
@@ -85,6 +113,7 @@ myChart = new Chart(ctx, {
   },
 });
 
+//creates a new line chart using the 'lineChartData'
 function createLinechart(lineChartData) {
   myChart = new Chart(ctx, {
     type: "line",

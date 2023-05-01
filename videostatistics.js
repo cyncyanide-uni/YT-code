@@ -37,7 +37,7 @@ export const chartData = [
         },
       },
       {
-        videoTitle: "Murder For Hire Should Be Legal ",
+        videoTitle: "Murder For Hire Should Be Legal",
         videoPublishedDate: "2020-04-10T18:24:21Z",
         videoStatistics: {
           viewCount: "46989",
@@ -346,4 +346,4 @@ export const chartData = [
       },
     ],
   },
-]
+];
